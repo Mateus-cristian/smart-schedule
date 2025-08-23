@@ -1,0 +1,64 @@
+{
+  "todos": [
+    {
+      "name": "Comprar mantimentos",
+      "description": "Leite, pão, ovos e frutas para a semana",
+      "dueDate": "2025-08-25T10:00:00Z",
+      "completed": false
+    },
+    {
+      "name": "Estudar React Router v7",
+      "description": "Ler documentação e criar projeto de teste",
+      "dueDate": "2025-08-26T14:30:00Z",
+      "completed": false
+    },
+    {
+      "name": "Enviar relatório mensal",
+      "description": "Preparar relatório de desempenho e enviar por e-mail",
+      "dueDate": "2025-08-28T09:00:00Z",
+      "completed": true
+    },
+    {
+      "name": "Reunião com equipe de design",
+      "description": "Discutir alterações no layout da aplicação",
+      "dueDate": "2025-08-29T16:00:00Z",
+      "completed": false
+    },
+    {
+      "name": "Treino de academia",
+      "description": "Treino funcional e alongamento",
+      "dueDate": "2025-08-24T07:30:00Z",
+      "completed": true
+    },
+    {
+      "name": "Backup do banco de dados",
+      "description": "Fazer backup completo e testar restauração",
+      "dueDate": "2025-08-30T22:00:00Z",
+      "completed": false
+    },
+    {
+      "name": "Organizar documentos fiscais",
+      "description": "Separar notas e recibos do mês",
+      "dueDate": "2025-08-27T13:15:00Z",
+      "completed": false
+    },
+    {
+      "name": "Revisar código do projeto",
+      "description": "Analisar pull requests e corrigir bugs pendentes",
+      "dueDate": "2025-08-26T18:45:00Z",
+      "completed": true
+    },
+    {
+      "name": "Criar mock para API de produtos",
+      "description": "Gerar JSON com dados fictícios para testes",
+      "dueDate": "2025-08-31T11:00:00Z",
+      "completed": false
+    },
+    {
+      "name": "Planejar viagem de férias",
+      "description": "Definir roteiro, hospedagem e transporte",
+      "dueDate": "2025-09-02T20:30:00Z",
+      "completed": false
+    }
+  ]
+}
