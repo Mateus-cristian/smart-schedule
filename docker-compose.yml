@@ -25,7 +25,7 @@ services:
     env_file: ./api/.env.development
     ports: ["3000:3000"]
     volumes:
-      - ./api:/app
+      - ./api:/rails
     command: bash -lc "bundle exec rails db:prepare && bundle exec rails s -b 0.0.0.0 -p 3000"
 
   worker:
