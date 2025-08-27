@@ -3,7 +3,7 @@ import { type JSX } from "react";
 
 function AppLayout(): JSX.Element {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen min-w-screen bg-gray-50">
       <Outlet />
     </div>
   );
