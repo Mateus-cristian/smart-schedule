@@ -42,7 +42,7 @@ export default function TasksPage(): JSX.Element {
               </div>
             </div>
             <button
-              className="bg-green-500 text-white h-fit self-end min-w-[150px]"
+              className="bg-green-600 text-white h-fit self-end min-w-[150px]"
               aria-label="Adicionar tarefa"
             >
               <span>+</span>Add Task
