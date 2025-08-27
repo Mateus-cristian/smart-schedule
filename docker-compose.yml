@@ -8,7 +8,6 @@ services:
     ports: ["5432:5432"]
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
   redis:
     image: redis:6-alpine
     ports: ["6379:6379"]
@@ -18,33 +17,6 @@ services:
     ports:
       - "8025:8025"
       - "1025:1025"
-
-  api:
-    build: ./api
-    depends_on: [db, redis, mailhog]
-    env_file: ./api/.env.development
-    ports: ["3000:3000"]
-    volumes:
-      - ./api:/rails
-    command: bash -lc "bundle exec rails db:prepare && bundle exec rails s -b 0.0.0.0 -p 3000"
-
-  worker:
-    build: ./api
-    depends_on: [api, redis]
-    env_file: ./api/.env.development
-    volumes:
-      - ./api:/app
-    command: bash -lc "bundle exec sidekiq -C config/sidekiq.yml"
-
-  web:
-    image: node:20
-    working_dir: /app
-    depends_on: [api]
-    ports:
-      - "5173:5173"
-    volumes:
-      - ./web:/app
-    command: bash -lc "npm install && npm run dev -- --host"
 
 volumes:
   postgres_data:
