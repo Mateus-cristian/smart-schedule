@@ -11,7 +11,7 @@ export default function LoginPage(): JSX.Element {
         <header className="p-4 text-center">
           <h1 className="font-bold text-2xl md:text-3xl">TaskMaster</h1>
           <h2 className="text-neutral-600 mt-4 leading-2">
-            Your productivity awaits
+            Sua produtividade o espera
           </h2>
         </header>
 
