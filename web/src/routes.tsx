@@ -1,6 +1,7 @@
 import AppLayout from "./ui/AppLayout";
 import TasksPage from "@/routes/tasksPage";
 import LoginPage from "@/routes/loginPage";
+import CreateAccountPage from "@/routes/createAccountPage";
 
 export default [
   {
@@ -13,6 +14,10 @@ export default [
       {
         path: "login",
         element: <LoginPage />,
+      },
+      {
+        path: "criacao-de-conta",
+        element: <CreateAccountPage />,
       },
     ],
   },
