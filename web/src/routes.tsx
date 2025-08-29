@@ -16,7 +16,7 @@ export default [
         element: <LoginPage />,
       },
       {
-        path: "criacao-de-conta",
+        path: "criar-conta",
         element: <CreateAccountPage />,
       },
     ],

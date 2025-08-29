@@ -1,6 +1,56 @@
+import {
+  createAccountSchema,
+  type CreateAccountInput,
+} from "@/schemas/account";
+import { zodResolver } from "@hookform/resolvers/zod";
 import type { JSX } from "react";
+import { useForm, Controller } from "react-hook-form";
+import InputWithError from "@/components/InputWithError";
+import api from "@/api/axios";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
 
 export default function CreateAccountPage(): JSX.Element {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreateAccountInput>({
+    resolver: zodResolver(createAccountSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const navigate = useNavigate();
+
+  const onSubmit = async (data: CreateAccountInput) => {
+    try {
+      await api.post("/users", {
+        user: {
+          username: data.username,
+          email: data.email,
+          password: data.password,
+          password_confirmation: data.confirmPassword,
+        },
+      });
+
+      toast.success("Usuário criado com sucesso");
+
+      navigate("/login");
+    } catch (err: any) {
+      toast.success(
+        "Erro ao criar usuário,tente novamente, se persistir contate suporte",
+        {
+          position: "bottom-right",
+        }
+      );
+    }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen w-full">
       <div
@@ -15,37 +65,79 @@ export default function CreateAccountPage(): JSX.Element {
           </h2>
         </header>
 
-        <form className="p-4">
-          <div className="flex flex-col gap-2 lg:min-w-[30%]">
+        <form className="p-4" onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex flex-col gap-8 lg:min-w-[30%]">
             <div
               className="flex flex-col gap-1"
               aria-description="caixa de texto para adicionar o nome"
             >
-              <label htmlFor="name">Nome</label>
-              <input type="text" id="name" name="name" />
+              <Controller
+                name="username"
+                control={control}
+                render={({ field }) => (
+                  <InputWithError
+                    label="Nome"
+                    id="username"
+                    error={errors.username?.message}
+                    {...field}
+                  />
+                )}
+              />
             </div>
             <div
               className="flex flex-col gap-1"
               aria-description="caixa de texto para adicionar o e-mail"
             >
-              <label htmlFor="email">E-mail</label>
-              <input type="email" id="email" name="email" />
+              <Controller
+                name="email"
+                control={control}
+                render={({ field }) => (
+                  <InputWithError
+                    label="Email"
+                    id="email"
+                    error={errors.email?.message}
+                    {...field}
+                  />
+                )}
+              />
             </div>
             <div
               className="flex flex-col gap-1"
               aria-description="caixa de texto para adicionar a senha"
             >
-              <label htmlFor="password">Senha</label>
-              <input type="password" id="password" name="password" />
+              <Controller
+                name="password"
+                control={control}
+                render={({ field }) => (
+                  <InputWithError
+                    label="Senha"
+                    id="password"
+                    type="password"
+                    error={errors.password?.message}
+                    {...field}
+                  />
+                )}
+              />
             </div>
             <div
               className="flex flex-col gap-1"
               aria-description="caixa de texto para adicionar a senha"
             >
-              <label htmlFor="password">Confirmar Senha</label>
-              <input type="password" id="password" name="password" />
+              <Controller
+                name="confirmPassword"
+                control={control}
+                render={({ field }) => (
+                  <InputWithError
+                    label="Confirmar senha"
+                    id="confirmPassword"
+                    type="password"
+                    error={errors.confirmPassword?.message}
+                    {...field}
+                  />
+                )}
+              />
             </div>
-            <button className="bg-green-600 text-white mt-2">
+            <button className="bg-green-600 text-white mt-2" type="submit">
               Criar conta
             </button>
           </div>
