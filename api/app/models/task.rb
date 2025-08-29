@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Task < ApplicationRecord
-
     validates :name, presence: true
     validates :description, presence: true
 
@@ -11,7 +10,7 @@ class Task < ApplicationRecord
       name: name,
       description: description,
       due_date: due_date,
-      active: active,
+      active: active
     }
   end
 end

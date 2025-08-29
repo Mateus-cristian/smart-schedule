@@ -4,10 +4,10 @@ Rails.application.routes.draw do
   devise_for :users,
   defaults: { format: :json },
   controllers: {
-    registrations: 'users/registrations'
+    registrations: "users/registrations"
   }
 
   get "up" => "rails/health#show", as: :rails_health_check
 
-  resources :tasks, only: [:create, :show, :update, :index]
+  resources :tasks, only: [ :create, :show, :update, :index ]
 end
