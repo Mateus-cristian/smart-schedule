@@ -1,51 +1,76 @@
-import axios from "axios";
-
-// Use variável de ambiente para facilitar deploy em produção
-const api = axios.create({
-  baseURL: "http://localhost:3000",
-});
+import axios, {
+  type AxiosResponse,
+  type AxiosError,
+  type InternalAxiosRequestConfig,
+  AxiosHeaders,
+} from "axios";
+import toast from "react-hot-toast";
+import { useAuthStore } from "@/store/auth";
+import { translateError } from "@/utils/translations";
 
 let activeRequests = 0;
-const listeners: (() => void)[] = [];
+let listeners: Array<() => void> = [];
 
-export function onLoadingChange(listener: () => void) {
-  listeners.push(listener);
-}
+export const isLoading = () => activeRequests > 0;
+export const onLoadingChange = (cb: () => void) => {
+  listeners.push(cb);
+  return () => {
+    listeners = listeners.filter((l) => l !== cb);
+  };
+};
+const notify = () => listeners.forEach((cb) => cb());
 
-function notify() {
-  listeners.forEach((fn) => fn());
-}
+let unauthorizedNotified = false;
+const notifyUnauthorizedOnce = (
+  message = "Sessão expirada. Faça login novamente."
+) => {
+  if (unauthorizedNotified) return;
+  unauthorizedNotified = true;
+  toast.error(translateError(message));
+  setTimeout(() => (unauthorizedNotified = false), 5000);
+};
 
-// Loader global
-api.interceptors.request.use((config) => {
+const api = axios.create({
+  baseURL: "http://127.0.0.1:3000",
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   activeRequests++;
   notify();
 
-  // Só adiciona o token se existir (rotas protegidas)
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers = config.headers || {};
-    config.headers.Authorization = token;
-  }
-
+  if (!config.headers) config.headers = new AxiosHeaders();
   return config;
 });
 
 api.interceptors.response.use(
-  (response) => {
+  (response: AxiosResponse) => {
     activeRequests--;
     notify();
     return response;
   },
-  (error) => {
+  (error: AxiosError) => {
     activeRequests--;
     notify();
-    throw error;
+
+    const authStore = useAuthStore.getState();
+    const NOT_AUTHORIZED = "Para acesso realize login";
+
+    const message =
+      (error.response?.data as { error?: string })?.error || NOT_AUTHORIZED;
+
+    if (error.response?.status === 401) {
+      authStore.clearUser?.();
+      notifyUnauthorizedOnce(message);
+
+      return Promise.reject({ ...error, isUnauthorized: true });
+    }
+
+    return Promise.reject(error);
   }
 );
-
-export function isLoading() {
-  return activeRequests > 0;
-}
 
 export default api;
