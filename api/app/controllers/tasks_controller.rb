@@ -5,17 +5,17 @@ class TasksController < ApplicationController
 
   def index
     tasks = Task.all
-    render json: tasks.map(&:as_json)
+    render json: tasks, each_serializer: TaskSerializer
   end
 
   def show
-    render json: @task.as_json
+    render json: @task, serializer: TaskSerializer
   end
 
   def create
     task = Task.new(task_params)
     if task.save
-      render json: task.as_json, status: :created
+      render json: task, serializer: TaskSerializer, status: :created
     else
       render json: { errors: task.errors.full_messages }, status: :unprocessable_entity
     end
@@ -23,7 +23,7 @@ class TasksController < ApplicationController
 
   def update
     if @task.update(task_params)
-      render json: @task.as_json
+      render json: @task, serializer: TaskSerializer
     else
       render json: { errors: @task.errors.full_messages }, status: :unprocessable_entity
     end
