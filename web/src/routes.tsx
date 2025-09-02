@@ -1,24 +1,35 @@
-import AppLayout from "./ui/AppLayout";
-import TasksPage from "@/routes/tasksPage";
-import LoginPage from "@/routes/loginPage";
-import CreateAccountPage from "@/routes/createAccountPage";
+import PrivateRoute from "@/ui/PrivateRoute";
+import TasksPage from "@/routes/TasksPage";
+import LoginPage from "@/routes/LoginPage";
+import CreateAccountPage from "@/routes/CreateAccountPage";
+import AppLayout from "@/ui/AppLayout";
 
-export default [
+const routes = [
   {
     element: <AppLayout />,
     children: [
       {
-        index: true,
-        element: <TasksPage />,
+        path: "/tasks",
+        element: (
+          <PrivateRoute>
+            <TasksPage />
+          </PrivateRoute>
+        ),
       },
       {
-        path: "login",
+        index: true,
         element: <LoginPage />,
       },
       {
-        path: "criar-conta",
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
+        path: "/criar-conta",
         element: <CreateAccountPage />,
       },
     ],
   },
 ];
+
+export default routes;
