@@ -9,7 +9,6 @@ export default function TasksPage(): JSX.Element {
   return (
     <div className="container w-[95%] m-auto lg:w-[75%] xl:w-[50%]">
       <header className="pt-7">
-        <h1 className="text-center font-semibold text-3xl">Task Master</h1>
         <div className="bg-neutral-100 w-full flex flex-col gap-2 border border-neutral-200 px-2 py-4 rounded mt-6 ">
           <div className="flex flex-col gap-2 w-full">
             <div className="flex flex-col gap-2 w-full lg:flex-row">
