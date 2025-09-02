@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  devise_for :users,
-  defaults: { format: :json },
-  controllers: {
-    registrations: "users/registrations"
-  }
+  devise_for :users, defaults: { format: :json },
+                     controllers: {
+                       registrations: "users/registrations",
+                       sessions: "users/sessions"
+                     }
 
-  get "up" => "rails/health#show", as: :rails_health_check
+  devise_scope :user do
+    get "/current_user", to: "users/sessions#show"
+  end
 
-  resources :tasks, only: [ :create, :show, :update, :index ]
+
+  resources :tasks, only: [:create, :show, :update, :index]
 end
