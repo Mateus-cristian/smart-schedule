@@ -7,6 +7,7 @@ import axios, {
 import toast from "react-hot-toast";
 import { useAuthStore } from "@/store/auth";
 import { translateError } from "@/utils/translations";
+import { toCamelCase, toSnakeCase } from "@/utils/caseConverters";
 
 let activeRequests = 0;
 let listeners: Array<() => void> = [];
@@ -42,6 +43,10 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   activeRequests++;
   notify();
 
+  if (config.data && typeof config.data === "object") {
+    config.data = toSnakeCase(config.data);
+  }
+
   if (!config.headers) config.headers = new AxiosHeaders();
   return config;
 });
@@ -50,6 +55,11 @@ api.interceptors.response.use(
   (response: AxiosResponse) => {
     activeRequests--;
     notify();
+
+    if (response.data && typeof response.data === "object") {
+      response.data = toCamelCase(response.data);
+    }
+
     return response;
   },
   (error: AxiosError) => {
@@ -59,14 +69,18 @@ api.interceptors.response.use(
     const authStore = useAuthStore.getState();
     const NOT_AUTHORIZED = "Para acesso realize login";
 
+    const data = error.response?.data as any;
     const message =
-      (error.response?.data as { error?: string })?.error || NOT_AUTHORIZED;
+      data?.error ||
+      (Array.isArray(data?.errors) ? data.errors.join(", ") : data?.errors);
 
     if (error.response?.status === 401) {
       authStore.clearUser?.();
-      notifyUnauthorizedOnce(message);
+      notifyUnauthorizedOnce(message || NOT_AUTHORIZED);
 
       return Promise.reject({ ...error, isUnauthorized: true });
+    } else {
+      toast.error(translateError(message));
     }
 
     return Promise.reject(error);
