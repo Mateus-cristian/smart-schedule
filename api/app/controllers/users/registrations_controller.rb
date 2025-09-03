@@ -3,6 +3,7 @@
 module Users
   class RegistrationsController < Devise::RegistrationsController
     respond_to :json
+    skip_before_action :authenticate_with_jwt!, only: [:create]
 
     def create
       build_resource(sign_up_params)
@@ -13,7 +14,7 @@ module Users
       else
         clean_up_passwords resource
         set_minimum_password_length
-        render json: { errors: resource.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: resource.errors.full_messages.join(", ") }, status: :unprocessable_entity
       end
     end
 
