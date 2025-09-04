@@ -1,54 +1,41 @@
-import {
-  createAccountSchema,
-  type CreateAccountInput,
-} from "@/schemas/account";
+import { createAccountSchema, type CreateAccountData } from "@/schemas/account";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { JSX } from "react";
 import { useForm, Controller } from "react-hook-form";
 import InputWithError from "@/components/InputWithError";
-import api from "@/api/axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
+import { useCreateAccount } from "@/hooks/account/useCreateAccount";
 
 export default function CreateAccountPage(): JSX.Element {
+  const navigate = useNavigate();
+
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateAccountInput>({
+  } = useForm<CreateAccountData>({
     resolver: zodResolver(createAccountSchema),
     defaultValues: {
       username: "",
       email: "",
       password: "",
-      confirmPassword: "",
+      passwordConfirmation: "",
     },
   });
 
-  const navigate = useNavigate();
+  const createAccountMutation = useCreateAccount(() => {
+    toast.success("Usuário criado com sucesso");
+    navigate("/login");
+  });
 
-  const onSubmit = async (data: CreateAccountInput) => {
-    try {
-      await api.post("/users", {
-        user: {
-          username: data.username,
-          email: data.email,
-          password: data.password,
-          password_confirmation: data.confirmPassword,
-        },
-      });
-
-      toast.success("Usuário criado com sucesso");
-
-      navigate("/login");
-    } catch (err: any) {
-      toast.success(
-        "Erro ao criar usuário,tente novamente, se persistir contate suporte",
-        {
-          position: "bottom-right",
-        }
-      );
-    }
+  const onSubmit = (data: CreateAccountData) => {
+    createAccountMutation.mutate({
+      username: data.username,
+      email: data.email,
+      password: data.password,
+      passwordConfirmation: data.passwordConfirmation,
+    });
   };
 
   return (
@@ -124,14 +111,14 @@ export default function CreateAccountPage(): JSX.Element {
               aria-description="caixa de texto para adicionar a senha"
             >
               <Controller
-                name="confirmPassword"
+                name="passwordConfirmation"
                 control={control}
                 render={({ field }) => (
                   <InputWithError
                     label="Confirmar senha"
                     id="confirmPassword"
                     type="password"
-                    error={errors.confirmPassword?.message}
+                    error={errors.passwordConfirmation?.message}
                     {...field}
                   />
                 )}
