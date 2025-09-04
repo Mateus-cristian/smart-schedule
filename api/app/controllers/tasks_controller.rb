@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class TasksController < ApplicationController
-  before_action :set_task, only: [ :show, :update, :destroy ]
+  before_action :set_task, only: [ :show, :update, :destroy]
   
   def index
     tasks = Task.all
@@ -35,6 +35,12 @@ class TasksController < ApplicationController
     else
       render json: { errors: @task.errors.full_messages }, status: :unprocessable_entity
     end
+  end
+
+  def search_by_title
+    tasks = Task.search_by_title(params[:title].to_s)
+
+    render json: tasks, each_serializer: TaskSerializer
   end
   
   private

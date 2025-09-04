@@ -13,4 +13,8 @@ class Task < ApplicationRecord
       active: active
     }
   end
+
+  def self.search_by_title(prefix)
+    where("title ILIKE ?", "#{prefix}%")
+  end
 end
