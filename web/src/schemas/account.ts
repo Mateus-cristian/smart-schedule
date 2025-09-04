@@ -26,11 +26,11 @@ export const createAccountSchema = z
         message:
           "A senha deve conter pelo menos uma letra minúscula, uma maiúscula e um caractere especial",
       }),
-    confirmPassword: z.string(),
+    passwordConfirmation: z.string(),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine((data) => data.password === data.passwordConfirmation, {
     message: "As senhas não coincidem",
     path: ["confirmPassword"],
   });
 
-export type CreateAccountInput = z.infer<typeof createAccountSchema>;
+export type CreateAccountData = z.infer<typeof createAccountSchema>;
