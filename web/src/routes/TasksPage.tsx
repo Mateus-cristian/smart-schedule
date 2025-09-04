@@ -1,4 +1,4 @@
-import { type JSX } from "react";
+import { useState, type JSX } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { Controller, useForm } from "react-hook-form";
@@ -9,6 +9,8 @@ import { useTasks } from "@/hooks/task/useTasks";
 import { useCreateTask } from "@/hooks/task/useCreateTask";
 import { useUpdateTask } from "@/hooks/task/useUpdateTask";
 import { useDeleteTask } from "@/hooks/task/useDeleteTask";
+import { useTasksByTitle } from "@/hooks/task/useSearchByTitle";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
 export default function TasksPage(): JSX.Element {
   const {
@@ -26,7 +28,10 @@ export default function TasksPage(): JSX.Element {
     },
   });
 
-  const { data: tasks } = useTasks();
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebouncedValue(search, 500);
+  const { data: tasks } =
+    debouncedSearch.length > 0 ? useTasksByTitle(debouncedSearch) : useTasks();
 
   const createTaskMutation = useCreateTask(() => {
     toast.success("Task criada com sucesso");
@@ -82,7 +87,7 @@ export default function TasksPage(): JSX.Element {
                     render={({ field }) => (
                       <InputWithError
                         type="datetime-local"
-                        label="Quando lembrar?"
+                        label="Data prevista da tarefa"
                         id="dueDate"
                         error={errors.dueDate?.message}
                         {...field}
@@ -132,9 +137,11 @@ export default function TasksPage(): JSX.Element {
         <div className="bg-neutral-100 w-full flex flex-col gap-2 border border-neutral-200 px-2 py-4 rounded mt-6">
           <input
             type="text"
-            name=""
-            id=""
+            name="filter"
+            id="filter"
             aria-label="Buscar tarefa pelo nome"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
           <div
             className="flex gap-2"

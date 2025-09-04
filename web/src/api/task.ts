@@ -17,3 +17,9 @@ export async function updateTask(id: number, payload: Partial<TaskData>) {
 export async function deleteTask(id: number) {
   return api.delete(`/tasks/${id}`);
 }
+
+export async function searchByTitle(title: string) {
+  return api.get(`/tasks/search_by_title`, {
+    params: { title },
+  });
+}
