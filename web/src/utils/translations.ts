@@ -4,6 +4,7 @@ const errorTranslations: Record<string, string> = {
     "Você precisa fazer login para continuar.",
   "Your session expired. Please sign in again to continue.":
     "Sua sessão expirou. Faça login novamente.",
+  "Email has already been taken": "O Email já está sendo utilizado no sistema",
 };
 
 function translateError(message?: string) {
