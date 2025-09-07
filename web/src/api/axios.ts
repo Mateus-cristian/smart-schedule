@@ -7,7 +7,7 @@ import axios, {
 import toast from "react-hot-toast";
 import { useAuthStore } from "@/store/auth";
 import { translateError } from "@/utils/translations";
-import { toCamelCase, toSnakeCase } from "@/utils/caseConverters";
+import { deepToCamelCase, toSnakeCase } from "@/utils/caseConverters";
 
 let activeRequests = 0;
 let listeners: Array<() => void> = [];
@@ -57,7 +57,7 @@ api.interceptors.response.use(
     notify();
 
     if (response.data && typeof response.data === "object") {
-      response.data = toCamelCase(response.data);
+      response.data = deepToCamelCase(response.data);
     }
 
     return response;
