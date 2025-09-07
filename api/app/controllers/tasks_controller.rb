@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class TasksController < ApplicationController
-  before_action :set_task, only: [ :show, :update, :destroy]
-  
+  before_action :set_task, only: [ :show, :update, :destroy ]
+
   def index
     page = params[:page] || 1
     per_page = params[:per_page] || 10
@@ -16,12 +16,12 @@ class TasksController < ApplicationController
       }
     }
   end
-  
+
   def show
     tasks = current_user.tasks
     render json: @task, serializer: TaskSerializer
   end
-  
+
   def create
     task = current_user.tasks.new(task_params)
     if task.save
@@ -30,7 +30,7 @@ class TasksController < ApplicationController
       render json: { errors: task.errors.full_messages }, status: :unprocessable_entity
     end
   end
-  
+
   def update
     if @task.update(task_params)
       render json: @task, serializer: TaskSerializer
@@ -38,7 +38,7 @@ class TasksController < ApplicationController
       render json: { errors: @task.errors.full_messages }, status: :unprocessable_entity
     end
   end
-  
+
   def destroy
     if @task.destroy
       head :no_content
@@ -50,12 +50,12 @@ class TasksController < ApplicationController
   def search_by_title
     page = params[:page] || 1
     per_page = params[:per_page] || 10
-    
+
     tasks = current_user.tasks
     if params[:title].present?
       tasks = tasks.search_by_title(params[:title].to_s)
     end
-    if params[:active].to_s == 'true'
+    if params[:active].to_s == "true"
       tasks = tasks.where(active: true)
     end
     paginated = tasks.order(:id).page(page).per(per_page)
@@ -68,9 +68,9 @@ class TasksController < ApplicationController
       }
     }
   end
-  
+
   private
-  
+
   def set_task
     @task = current_user.tasks.find(params[:id])
   end

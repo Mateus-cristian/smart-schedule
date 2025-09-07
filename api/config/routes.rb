@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   end
 
 
-  resources :tasks, only: [:create, :show, :update, :index, :destroy] do
+  resources :tasks, only: [ :create, :show, :update, :index, :destroy ] do
     collection do
       get :search_by_title
     end

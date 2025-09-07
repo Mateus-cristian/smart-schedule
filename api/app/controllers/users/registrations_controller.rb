@@ -3,7 +3,7 @@
 module Users
   class RegistrationsController < Devise::RegistrationsController
     respond_to :json
-    skip_before_action :authenticate_with_jwt!, only: [:create]
+    skip_before_action :authenticate_with_jwt!, only: [ :create ]
 
     def create
       build_resource(sign_up_params)

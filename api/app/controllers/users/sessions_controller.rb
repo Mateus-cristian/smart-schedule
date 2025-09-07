@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+
 module Users
   class SessionsController < Devise::SessionsController
       respond_to :json
-      skip_before_action :authenticate_with_jwt!, only: [:create ]
+      skip_before_action :authenticate_with_jwt!, only: [ :create ]
 
       def show
         if current_user
@@ -15,7 +16,7 @@ module Users
       private
 
        def respond_with(resource, _opts = {})
-        token = request.env['warden-jwt_auth.token']
+        token = request.env["warden-jwt_auth.token"]
         cookies.encrypted[:access_token] = {
           value: token,
           httponly: true,
@@ -32,4 +33,3 @@ module Users
       end
   end
 end
-
