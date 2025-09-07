@@ -1,16 +1,20 @@
-import { useState, type JSX } from "react";
+import React, { useState, type JSX } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { Controller, useForm } from "react-hook-form";
 import InputWithError from "@/components/InputWithError";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { taskSchema, type TaskData } from "@/schemas/task";
-import { useTasks } from "@/hooks/task/useTasks";
 import { useCreateTask } from "@/hooks/task/useCreateTask";
 import { useUpdateTask } from "@/hooks/task/useUpdateTask";
 import { useDeleteTask } from "@/hooks/task/useDeleteTask";
-import { useTasksByTitle } from "@/hooks/task/useSearchByTitle";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { usePagination } from "@/hooks/usePagination";
+import {
+  useTasksPaginated,
+  useTasksByTitlePaginated,
+} from "@/hooks/task/useTasksPaginated";
+import Pagination from "@/components/Pagination";
 
 export default function TasksPage(): JSX.Element {
   const {
@@ -29,9 +33,20 @@ export default function TasksPage(): JSX.Element {
   });
 
   const [search, setSearch] = useState("");
+  const [active, setActive] = useState(false);
+  const [metaTotalPages, setMetaTotalPages] = useState(1);
+
+  const perPage = 10;
   const debouncedSearch = useDebouncedValue(search, 500);
-  const { data: tasks } =
-    debouncedSearch.length > 0 ? useTasksByTitle(debouncedSearch) : useTasks();
+  const isSearching = debouncedSearch.length > 0 || active === true;
+
+  const { page, setPage } = usePagination(metaTotalPages, [search, active]);
+
+  const paginatedResult = isSearching
+    ? useTasksByTitlePaginated(debouncedSearch, active, page, perPage)
+    : useTasksPaginated(page, perPage);
+  const tasks = paginatedResult.data?.tasks || [];
+  const meta = paginatedResult.data?.meta;
 
   const createTaskMutation = useCreateTask(() => {
     toast.success("Task criada com sucesso");
@@ -49,6 +64,10 @@ export default function TasksPage(): JSX.Element {
   const onSubmit = (data: TaskData) => {
     createTaskMutation.mutate(data);
   };
+
+  React.useEffect(() => {
+    if (meta?.totalPages) setMetaTotalPages(meta.totalPages);
+  }, [meta?.totalPages]);
 
   return (
     <div className="container w-[95%] m-auto lg:w-[75%] xl:w-[50%]">
@@ -135,20 +154,34 @@ export default function TasksPage(): JSX.Element {
         </div>
 
         <div className="bg-neutral-100 w-full flex flex-col gap-2 border border-neutral-200 px-2 py-4 rounded mt-6">
+          <span className="text-neutral-500 font-semibold">
+            Busque pelo título
+          </span>
           <input
             type="text"
             name="filter"
             id="filter"
             aria-label="Buscar tarefa pelo nome"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1); // resetar página ao buscar
+            }}
           />
           <div
             className="flex gap-2"
             aria-description="Checkbox para buscar somente por tarefas concluídas"
           >
-            <input type="checkbox" name="" placeholder="Buscar por tarefa" />
-            <span className="text-neutral-500">mostrar apenas ativas</span>
+            <input
+              type="checkbox"
+              placeholder="Buscar por tarefa"
+              checked={active}
+              onChange={(e) => {
+                setActive(e.target.checked);
+                setPage(1);
+              }}
+            />
+            <span className="text-neutral-500">Mostrar apenas finalizadas</span>
           </div>
         </div>
       </header>
@@ -198,6 +231,14 @@ export default function TasksPage(): JSX.Element {
               </div>
             ))}
         </article>
+        {meta && (
+          <Pagination
+            currentPage={page}
+            totalPages={meta.totalPages}
+            onPageChange={setPage}
+            className="mt-4"
+          />
+        )}
       </main>
     </div>
   );
