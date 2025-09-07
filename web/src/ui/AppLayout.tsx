@@ -5,7 +5,7 @@ import { Toaster } from "react-hot-toast";
 
 function AppLayout(): JSX.Element {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-16">
       <Loader />
       <Toaster />
       <Outlet />
