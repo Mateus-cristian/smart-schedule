@@ -4,8 +4,17 @@ class TasksController < ApplicationController
   before_action :set_task, only: [ :show, :update, :destroy]
   
   def index
-    tasks = Task.all
-    render json: tasks, each_serializer: TaskSerializer
+    page = params[:page] || 1
+    per_page = params[:per_page] || 10
+    paginated = Task.order(:id).page(page).per(per_page)
+    render json: {
+      tasks: ActiveModelSerializers::SerializableResource.new(paginated, each_serializer: TaskSerializer),
+      meta: {
+        current_page: paginated.current_page,
+        total_pages: paginated.total_pages,
+        total_count: paginated.total_count
+      }
+    }
   end
   
   def show
@@ -38,9 +47,25 @@ class TasksController < ApplicationController
   end
 
   def search_by_title
-    tasks = Task.search_by_title(params[:title].to_s)
-
-    render json: tasks, each_serializer: TaskSerializer
+    page = params[:page] || 1
+    per_page = params[:per_page] || 10
+    
+    tasks = Task.all
+    if params[:title].present?
+      tasks = tasks.search_by_title(params[:title].to_s)
+    end
+    if params[:active].to_s == 'true'
+      tasks = tasks.where(active: true)
+    end
+    paginated = tasks.order(:id).page(page).per(per_page)
+    render json: {
+      tasks: ActiveModelSerializers::SerializableResource.new(paginated, each_serializer: TaskSerializer),
+      meta: {
+        current_page: paginated.current_page,
+        total_pages: paginated.total_pages,
+        total_count: paginated.total_count
+      }
+    }
   end
   
   private
