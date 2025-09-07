@@ -6,7 +6,7 @@ class TasksController < ApplicationController
   def index
     page = params[:page] || 1
     per_page = params[:per_page] || 10
-    paginated = Task.order(:id).page(page).per(per_page)
+    paginated = current_user.tasks.order(:id).page(page).per(per_page)
     render json: {
       tasks: ActiveModelSerializers::SerializableResource.new(paginated, each_serializer: TaskSerializer),
       meta: {
@@ -18,11 +18,12 @@ class TasksController < ApplicationController
   end
   
   def show
+    tasks = current_user.tasks
     render json: @task, serializer: TaskSerializer
   end
   
   def create
-    task = Task.new(task_params)
+    task = current_user.tasks.new(task_params)
     if task.save
       render json: task, serializer: TaskSerializer, status: :created
     else
@@ -50,7 +51,7 @@ class TasksController < ApplicationController
     page = params[:page] || 1
     per_page = params[:per_page] || 10
     
-    tasks = Task.all
+    tasks = current_user.tasks
     if params[:title].present?
       tasks = tasks.search_by_title(params[:title].to_s)
     end
@@ -71,7 +72,7 @@ class TasksController < ApplicationController
   private
   
   def set_task
-    @task = Task.find(params[:id])
+    @task = current_user.tasks.find(params[:id])
   end
 
   def task_params

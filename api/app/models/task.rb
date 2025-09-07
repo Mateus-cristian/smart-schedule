@@ -3,6 +3,7 @@
 class Task < ApplicationRecord
     validates :title, presence: true
     validates :description, presence: true
+    belongs_to :user
 
     def as_json(_options = {})
     {
