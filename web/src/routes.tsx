@@ -3,6 +3,8 @@ import TasksPage from "@/routes/TasksPage";
 import LoginPage from "@/routes/LoginPage";
 import CreateAccountPage from "@/routes/CreateAccountPage";
 import AppLayout from "@/ui/AppLayout";
+import ForgotPasswordPage from "./routes/ForgotPasswordPage";
+import ResetPasswordPage from "./routes/ResetPasswordPage";
 
 const routes = [
   {
@@ -27,6 +29,14 @@ const routes = [
       {
         path: "/criar-conta",
         element: <CreateAccountPage />,
+      },
+      {
+        path: "/esquecer-senha",
+        element: <ForgotPasswordPage />,
+      },
+      {
+        path: "/resetar-senha",
+        element: <ResetPasswordPage />,
       },
     ],
   },
