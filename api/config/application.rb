@@ -44,5 +44,6 @@ module Api
     config.api_only = true
 
     config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore, key: 'task_master', same_site: :lax
   end
 end
