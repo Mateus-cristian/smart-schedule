@@ -87,7 +87,10 @@ export default function LoginPage(): JSX.Element {
         </form>
 
         <footer className="flex flex-col gap-2 justify-center w-full">
-          <a href="" className="font-semibold text-green-600 text-center">
+          <a
+            href="/esquecer-senha"
+            className="font-semibold text-green-600 text-center"
+          >
             Esqueci minha senha
           </a>
           <a
