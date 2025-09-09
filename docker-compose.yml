@@ -12,11 +12,5 @@ services:
     image: redis:6-alpine
     ports: ["6379:6379"]
 
-  mailhog:
-    image: mailhog/mailhog
-    ports:
-      - "8025:8025"
-      - "1025:1025"
-
 volumes:
   postgres_data:
