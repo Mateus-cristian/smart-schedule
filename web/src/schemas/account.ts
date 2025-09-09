@@ -15,7 +15,25 @@ export const passwordRequirements = [
   },
 ];
 
-export const createAccountSchema = z
+const forgotPasswordSchema = z.object({
+  email: z.string().email("Deve ser um email válido"),
+});
+
+type ForgotPasswordData = z.infer<typeof forgotPasswordSchema>;
+
+const resetPasswordSchema = z
+  .object({
+    password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
+    passwordConfirmation: z.string(),
+  })
+  .refine((data) => data.password === data.passwordConfirmation, {
+    message: "As senhas não coincidem",
+    path: ["passwordConfirmation"],
+  });
+
+type ResetPasswordData = z.infer<typeof resetPasswordSchema>;
+
+const createAccountSchema = z
   .object({
     username: z.string().nonempty("Nome deve ser preenchido"),
     email: z.string().email("Deve ser um email válido"),
@@ -33,4 +51,8 @@ export const createAccountSchema = z
     path: ["confirmPassword"],
   });
 
-export type CreateAccountData = z.infer<typeof createAccountSchema>;
+type CreateAccountData = z.infer<typeof createAccountSchema>;
+
+export { createAccountSchema, forgotPasswordSchema, resetPasswordSchema };
+
+export type { CreateAccountData, ForgotPasswordData, ResetPasswordData };
