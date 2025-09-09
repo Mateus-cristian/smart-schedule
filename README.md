@@ -21,6 +21,7 @@ TaskMaster é uma aplicação fullstack para gerenciamento de tarefas, construí
 ## Funcionalidades
 
 - Cadastro e login de usuários com autenticação JWT (Devise + devise-jwt)
+- Recuperação de senha ("esqueci minha senha") via e-mail
 - CRUD de tarefas (tasks) com título, descrição, data de entrega e status
 - Busca e filtro de tarefas por título e status
 - Paginação de tarefas
@@ -43,6 +44,7 @@ TaskMaster é uma aplicação fullstack para gerenciamento de tarefas, construí
 - RSpec, FactoryBot, Shoulda Matchers (testes)
 - dotenv-rails (variáveis de ambiente)
 - rack-cors (CORS)
+- Mailcatcher ou Letter Opener (para testes de e-mail em desenvolvimento)
 
 ### Frontend (React)
 
@@ -106,6 +108,7 @@ npm run dev
 - Variáveis de ambiente estão em [`.env`](.env), `.env.development`, `.env.test` (backend) e [`.env`](.env) (frontend, se necessário).
 - O backend usa CORS configurado para aceitar requisições do frontend.
 - O JWT é enviado via cookie httpOnly para máxima segurança.
+- Para testar e-mails em desenvolvimento, utilize [Mailcatcher](https://mailcatcher.me/) ou [Letter Opener](https://github.com/ryanb/letter_opener).
 
 ---
 
@@ -146,6 +149,8 @@ bundle exec rspec
 - `POST /users` — Criação de conta
 - `POST /users/sign_in` — Login
 - `DELETE /users/sign_out` — Logout
+- `POST /users/password` — Esqueci minha senha (envio de e-mail)
+- `PUT /users/password` — Redefinir senha
 
 ### Tasks
 
@@ -154,6 +159,12 @@ bundle exec rspec
 - `PATCH /tasks/:id` — Atualizar tarefa
 - `DELETE /tasks/:id` — Remover tarefa
 - `GET /tasks/search_by_title?title=...` — Buscar por título
+
+---
+
+## Internacionalização
+
+- Mensagens de erro e feedback traduzidas no frontend.
 
 ---
 
